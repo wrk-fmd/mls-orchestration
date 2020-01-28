@@ -1,0 +1,26 @@
+server:
+  port: 8090
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: stomp
+          uri: ws://localhost:8091
+          predicates:
+            - Path=/notifications
+        - id: auth
+          uri: http://localhost:8092
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+
+logging:
+  level:
+    root: info

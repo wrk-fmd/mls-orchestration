@@ -1,0 +1,50 @@
+version: '3.7'
+
+# This docker-compose file is used for starting all MLS services.
+# It does not build anything, but uses locally built images or pulls them from Docker Hub.
+# By default the image tagged as 'latest' is pulled. This can be overridden by setting $MLS_TAG
+# Configuration is taken from ./config which can be overridden by setting $MLS_CONFIG
+# Log files are written to ./log which can be overridden by setting $MLS_LOG
+
+services:
+  mls-gateway:
+    image: wrk-fmd/mls-gateway:${MLS_TAG:-latest}
+    ports:
+      - 8090:8080
+    volumes:
+      - type: bind
+        source: ${MLS_CONFIG:-./config}/gateway
+        target: /config
+        read_only: true
+      - type: bind
+        source: ${MLS_LOG:-./log}
+        target: /log
+
+  mls-auth:
+    image: wrk-fmd/mls-auth:${MLS_TAG:-latest}
+    volumes:
+      - type: bind
+        source: ${MLS_CONFIG:-./config}/auth
+        target: /config
+        read_only: true
+      - type: bind
+        source: ${MLS_LOG:-./log}
+        target: /log
+
+  mls-db:
+    image: wrk-fmd/mls-db:${MLS_TAG:-latest}
+    environment:
+      - POSTGRES_USER=mls
+      - POSTGRES_PASSWORD=mls-root-password
+      - POSTGRES_DATABASES=mls-auth:mls-auth-password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+networks:
+  default:
+    name: mls-network
+
+volumes:
+  postgres-data:

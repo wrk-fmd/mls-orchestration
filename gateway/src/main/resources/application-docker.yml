@@ -1,0 +1,25 @@
+# This profile uses the docker-compose DNS names and is activated for the default docker-compose build
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: stomp
+          uri: ws://mls-stomp:8080
+          predicates:
+            - Path=/notifications
+        - id: auth
+          uri: http://mls-auth:8080
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+
+logging:
+  config: /config/log-docker.xml
