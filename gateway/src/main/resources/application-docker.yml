@@ -20,6 +20,12 @@ spring:
             - Path=/auth/**
           filters:
             - StripPrefix=1
+        - id: coceso
+          uri: http://mls-coceso:8080
+          predicates:
+            - Path=/coceso/**
+          filters:
+            - StripPrefix=1
 
 logging:
   config: /config/log-docker.xml

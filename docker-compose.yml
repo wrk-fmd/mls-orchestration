@@ -1,42 +1,45 @@
 version: '3.7'
 
-# This docker-compose file is used for starting all MLS services.
-# It does not build anything, but uses locally built images or pulls them from Docker Hub.
-# By default the image tagged as 'latest' is pulled. This can be overridden by setting $MLS_TAG
-# Configuration is taken from ./config which can be overridden by setting $MLS_CONFIG
-# Log files are written to ./log which can be overridden by setting $MLS_LOG
+# This docker-compose file can be used to build the orchestration-related images
+# It can also be used to run only the orchestration-related containers during development, when other services are started manually
 
 services:
   mls-gateway:
-    image: wrk-fmd/mls-gateway:${MLS_TAG:-latest}
+    image: wrkfmdit/mls-gateway:${MLS_TAG:-latest}
+    build:
+      context: ./gateway
     ports:
       - 8090:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
     volumes:
       - type: bind
-        source: ${MLS_CONFIG:-./config}/gateway
+        source: ${MLS_AUTH_CONFIG:-./gateway/src/main/resources}
         target: /config
         read_only: true
       - type: bind
         source: ${MLS_LOG:-./log}
         target: /log
 
-  mls-auth:
-    image: wrk-fmd/mls-auth:${MLS_TAG:-latest}
-    volumes:
-      - type: bind
-        source: ${MLS_CONFIG:-./config}/auth
-        target: /config
-        read_only: true
-      - type: bind
-        source: ${MLS_LOG:-./log}
-        target: /log
+  mls-amqp:
+    image: wrkfmdit/mls-amqp:${MLS_TAG:-latest}
+    build: ./amqp
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 61613:61613
+    environment:
+      RABBITMQ_DEFAULT_USER: mls-rabbitmq-user
+      RABBITMQ_DEFAULT_PASS: mls-rabbitmq-pass
 
   mls-db:
-    image: wrk-fmd/mls-db:${MLS_TAG:-latest}
+    image: wrkfmdit/mls-db:${MLS_TAG:-latest}
+    build:
+      context: ./db
     environment:
       - POSTGRES_USER=mls
       - POSTGRES_PASSWORD=mls-root-password
-      - POSTGRES_DATABASES=mls-auth:mls-auth-password
+      - POSTGRES_DATABASES=mls-coceso:mls-coceso-password,mls-auth:mls-auth-password
     ports:
       - 5432:5432
     volumes:
