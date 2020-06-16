@@ -10,10 +10,6 @@ spring:
             allowedMethods: "*"
             allowedHeaders: "*"
       routes:
-        - id: stomp
-          uri: ws://localhost:8091
-          predicates:
-            - Path=/notifications
         - id: auth
           uri: http://localhost:8092
           predicates:

@@ -10,10 +10,6 @@ spring:
             allowedMethods: "*"
             allowedHeaders: "*"
       routes:
-        - id: stomp
-          uri: ws://mls-stomp:8080
-          predicates:
-            - Path=/notifications
         - id: auth
           uri: http://mls-auth:8080
           predicates:
