@@ -8,6 +8,7 @@ services:
     image: wrkfmdit/mls-gateway:${MLS_TAG:-latest}
     build:
       context: ./gateway
+      network: host
     ports:
       - 8090:8080
     environment:

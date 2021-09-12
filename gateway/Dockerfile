@@ -4,7 +4,6 @@
 # - APP is the name of the generated Spring Boot jar file, normally the artifact id of the maven module
 
 # First stage: Build the source code with maven
-# TODO alpine would be better, but is not available with OpenJDK 11 as of now
 FROM maven:slim AS build
 WORKDIR /app
 
@@ -14,17 +13,19 @@ WORKDIR /app
 # find -name pom.xml -printf "COPY %p %h/\n" | sort -t" " -k3 | column -t
 COPY  ./pom.xml               ./
 
+# Copy maven proxy config
+COPY ./mvn-proxy.xml ./
+
 # Resolve all dependencies, don't fail on missing (internal) dependencies
-RUN mvn -fn -B dependency:go-offline > /dev/null
+RUN mvn -s mvn-proxy.xml -B dependency:go-offline > /dev/null
 
 # Copy full source code (generated code is ignored through .dockerignore)
 COPY ./ ./
 
 # Build the requested module and dependencies
-RUN mvn -q package
+RUN mvn -s mvn-proxy.xml -q package
 
 # Second stage: Build the server image (needs only JRE)
-# TODO alpine would be better, but is not available with OpenJDK 11 as of now
 FROM openjdk:jre-slim AS runtime
 
 # Run as non-root
