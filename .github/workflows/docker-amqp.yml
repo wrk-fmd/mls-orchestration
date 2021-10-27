@@ -1,0 +1,20 @@
+name: Build mls-amqp Docker image
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+    paths:
+      - .github/workflows/docker-amqp.yml
+      - amqp/**
+
+jobs:
+  deploy:
+    uses: wrk-fmd/mls-packages/.github/workflows/docker-build.yml@main
+    with:
+      DOCKER_CONTEXT: ./amqp
+      DOCKER_NAME: wrkfmdit/mls-amqp
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
