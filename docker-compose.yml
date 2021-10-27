@@ -8,14 +8,18 @@ services:
     image: wrkfmdit/mls-gateway:${MLS_TAG:-latest}
     build:
       context: ./gateway
+      args:
+        APP: api-gateway
       network: host
     ports:
       - "8090:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    tmpfs:
+      - /tmp
     volumes:
       - type: bind
-        source: ${MLS_AUTH_CONFIG:-./gateway/src/main/resources}
+        source: ${MLS_GATEWAY_CONFIG:-./gateway/src/main/resources}
         target: /config
         read_only: true
       - type: bind
