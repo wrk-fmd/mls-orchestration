@@ -7,6 +7,11 @@
 # Ignore json files in resources
 **/resources/**/*.json
 
+# Ignore keys in resources
+**/resources/**/keys
+**/resources/**/*.key
+**/resources/**/*.pub
+
 # Ignore logging configuration
 **/log*.xml
 
@@ -25,5 +30,19 @@ resources
 **/.gitignore
 
 # Ignore IDE config
+**/.editorconfig
 **/.idea
 **/*.iml
+
+# Ignore Docker config files themselves
+**/.dockerignore
+**/docker-compose.yml
+**/Dockerfile
+
+# Ignore scripts
+**/.github
+**/docker-build.sh
+
+# Ignore docs
+**/LICENSE*
+**/README*
