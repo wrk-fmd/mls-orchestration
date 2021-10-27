@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>Hoxton.SR12</version>
+        <version>2020.0.4</version>
         <relativePath/>
     </parent>
 
@@ -18,7 +18,7 @@
     <description>This module provides a gateway for all MLS components</description>
 
     <properties>
-        <io.springfox.version>2.9.2</io.springfox.version>
+        <org.springdoc.version>1.5.12</org.springdoc.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
@@ -32,16 +32,11 @@
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
 
-        <!-- Swagger -->
+        <!-- Springdoc -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${io.springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${io.springfox.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-webflux-ui</artifactId>
+            <version>${org.springdoc.version}</version>
         </dependency>
 
         <!-- Test -->
